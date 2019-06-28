@@ -34,15 +34,15 @@ data class User(
     constructor(id: String) : this(id = id, firstName = null, lastName = null)
 
     companion object Factory {
-        private var lastId = 1
-        var id: String = "<EMPTY>"
-        var firstName: String? = null
-        var lastName: String? = null
-        var avatar: String? = null
-        var rating: Int = 0
-        var respect: Int = 0
-        var lastVisit: Date? = null
-        var isOnline: Boolean = false
+        private var lastId = -1
+        private var id: String = "<EMPTY>"
+        private var firstName: String? = null
+        private var lastName: String? = null
+        private var avatar: String? = null
+        private var rating: Int = 0
+        private var respect: Int = 0
+        private var lastVisit: Date? = null
+        private var isOnline: Boolean = false
 
         fun makeUser(fullName: String?): User {
             val (firstName, lastName) = parseFullName(fullName)
