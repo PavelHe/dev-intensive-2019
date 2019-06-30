@@ -27,50 +27,64 @@ fun Date.add(value: Int, units: TimeUnits): Date {
 }
 
 fun Date.humanizeDiff(date: Date = Date()): String {
-    val diffDate = date.time - time
-    val isYearDif = diffDate / DAY > 360
-    val isDaysDiff = diffDate / DAY > 0
-    val isHourDiff = diffDate / HOUR > 0
-    val isMinuteDiff = diffDate / MINUTE > 0
-    val isSecondsDiff = diffDate / SECOND >= 0
+    val isFuture = time > date.time
+    val diffDate = Math.abs(time - date.time)
+    val daysDiff = diffDate / DAY
+    val hourDiff = diffDate / HOUR
+    val minuteDiff = diffDate / MINUTE
+    val secondsDiff = diffDate / SECOND
 
-    if (isYearDif)
-        return getYearDiff()
-    if (isDaysDiff)
-        return getDaysDiff(diffDate / DAY)
-    if (isHourDiff)
-        return getHoursDiff(diffDate / HOUR)
-    if (isMinuteDiff)
-        return getMinutesDiff(diffDate / MINUTE)
-    if (isSecondsDiff)
-        return getSecondsDiff(diffDate / SECOND)
-
-    return ""
-}
-
-private fun getYearDiff(): String {
-    return "более года назад"
-}
-
-private fun getDaysDiff(diff: Long): String {
-    return if (diff == 1L) "день назад" else "$diff дней назад"
-}
-
-private fun getHoursDiff(diff: Long): String {
-    return if (diff in 22..26) "день назад" else "$diff часов назад"
-}
-
-private fun getMinutesDiff(diff: Long): String {
-    return if (diff in 45..75) "час назад" else "$diff минут назад"
-}
-
-private fun getSecondsDiff(diff: Long): String {
-    return when (diff) {
-        in 0..1 -> "только что"
-        in 1..45 -> "несколько секунд назад"
-        in 45..75 -> "минуту назад"
-        else -> "$diff секунда назад"
+    return when {
+        daysDiff > 360 -> if (isFuture) "более чем через год" else "более года назад"
+        hourDiff > 26 -> getPluralDay(daysDiff, isFuture)
+        hourDiff in 23..26 -> if (isFuture) "через день" else "день назад"
+        hourDiff <= 22 && minuteDiff > 75 -> getPluralHour(hourDiff, isFuture)
+        minuteDiff in 46..75 -> if (isFuture) "через час" else "час назад"
+        minuteDiff <= 45 && secondsDiff > 75 -> getPluralMinute(minuteDiff, isFuture)
+        secondsDiff in 46..75 -> if (isFuture) "через минуту" else "минуту назад"
+        secondsDiff in 2..45 -> if (isFuture) "через несколько секунд" else "несколько секунд назад"
+        else -> "только что"
     }
+}
+
+private fun getPluralDay(day: Long, isFuture: Boolean): String {
+    return when (getPluralType(day)) {
+        Plural.ONE -> if (isFuture) "чере $day день" else "$day день назад"
+        Plural.SOME -> if (isFuture) "через $day дня" else "$day дня назад"
+        Plural.MANY -> if (isFuture) "через $day дней" else "$day дней назад"
+    }
+}
+
+private fun getPluralHour(hour: Long, isFuture: Boolean): String {
+    return when (getPluralType(hour)) {
+        Plural.ONE -> if (isFuture) "чере $hour час" else "$hour час назад"
+        Plural.SOME -> if (isFuture) "через $hour часа" else "$hour часа назад"
+        Plural.MANY -> if (isFuture) "через $hour часов" else "$hour часов назад"
+    }
+}
+
+private fun getPluralMinute(minute: Long, isFuture: Boolean): String {
+    return when (getPluralType(minute)) {
+        Plural.ONE -> if (isFuture) "чере $minute минуту" else "$minute минуту назад"
+        Plural.SOME -> if (isFuture) "через $minute минуты" else "$minute минуты назад"
+        Plural.MANY -> if (isFuture) "через $minute минут" else "$minute минут назад"
+    }
+}
+
+private fun getPluralType(num: Long): Plural {
+    var n = Math.abs(num).toInt()
+    n %= 100
+    if (n in 5..20) {
+        return Plural.MANY
+    }
+    n %= 10
+    if (n == 1) {
+        return Plural.ONE
+    }
+    if (n in 2..4) {
+        return Plural.SOME
+    }
+    return Plural.MANY
 }
 
 enum class TimeUnits {
@@ -78,4 +92,10 @@ enum class TimeUnits {
     MINUTE,
     HOUR,
     DAY
+}
+
+enum class Plural {
+    ONE,
+    MANY,
+    SOME
 }

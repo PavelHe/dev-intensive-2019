@@ -21,7 +21,7 @@ data class User(
     )
 
     private constructor(userBuilder: Factory) : this(
-        userBuilder.id,
+        userBuilder.id!!,
         userBuilder.firstName,
         userBuilder.lastName,
         userBuilder.avatar,
@@ -35,7 +35,7 @@ data class User(
 
     companion object Factory {
         private var lastId = -1
-        private var id: String = "<EMPTY>"
+        private var id: String? = null
         private var firstName: String? = null
         private var lastName: String? = null
         private var avatar: String? = null
@@ -45,8 +45,9 @@ data class User(
         private var isOnline: Boolean = false
 
         fun makeUser(fullName: String?): User {
+            lastId++
             val (firstName, lastName) = parseFullName(fullName)
-            return User(id = "${lastId++}", firstName = firstName, lastName = lastName)
+            return User(id = "$lastId", firstName = firstName, lastName = lastName)
         }
 
         fun id(id: String): Factory {
@@ -90,13 +91,14 @@ data class User(
         }
 
         fun build(): User {
+            if (id == null) id = "${++lastId}"
             val user = User(this)
             toDefault()
             return user
         }
 
         private fun toDefault() {
-            id = "<EMPTY>"
+            id = null
             firstName = null
             lastName = null
             avatar = null

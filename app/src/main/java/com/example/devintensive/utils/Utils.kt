@@ -15,7 +15,7 @@ object Utils {
         "ж" to "zh",
         "з" to "z",
         "и" to "i",
-        "й" to "y",
+        "й" to "i",
         "к" to "k",
         "л" to "l",
         "м" to "m",
@@ -31,46 +31,13 @@ object Utils {
         "ц" to "c",
         "ч" to "ch",
         "ш" to "sh",
-        "щ" to "sh",
+        "щ" to "sh'",
         "ъ" to "",
         "ы" to "i",
         "ь" to "",
         "э" to "e",
         "ю" to "yu",
-        "я" to "ya",
-        "А" to "A",
-        "Б" to "B",
-        "В" to "V",
-        "Г" to "G",
-        "Д" to "D",
-        "Е" to "E",
-        "Ё" to "E",
-        "Ж" to "ZH",
-        "З" to "Z",
-        "И" to "I",
-        "Й" to "Y",
-        "К" to "K",
-        "Л" to "L",
-        "М" to "M",
-        "Н" to "N",
-        "О" to "O",
-        "П" to "P",
-        "Р" to "R",
-        "С" to "S",
-        "Т" to "T",
-        "У" to "U",
-        "Ф" to "F",
-        "Х" to "H",
-        "Ц" to "C",
-        "Ч" to "CH",
-        "Ш" to "SH",
-        "Щ" to "SH",
-        "Ъ" to "",
-        "Ы" to "i",
-        "Ь" to "",
-        "Э" to "E",
-        "Ю" to "YU",
-        "Я" to "YA"
+        "я" to "ya"
     )
 
     fun parseFullName(fullName: String?): Pair<String?, String?> {
@@ -85,12 +52,12 @@ object Utils {
         fun getLetter(str: String) = transliterationMap[str] ?: str
 
         val fullUserName = fullName.split(" ")
-        val first = fullUserName.getOrNull(0)?.map { getLetter(it.toString()) }
+        val first = fullUserName.getOrNull(0)?.map { getLetter(it.toString().toLowerCase()) }
             ?.joinToString(separator = "", prefix = "", postfix = "")
-        val second = fullUserName.getOrNull(1)?.map { getLetter(it.toString()) }
+        val second = fullUserName.getOrNull(1)?.map { getLetter(it.toString().toLowerCase()) }
             ?.joinToString(separator = "", prefix = "", postfix = "")
 
-        return "$first$divider$second"
+        return "${first?.capitalize()}$divider${second?.capitalize()}"
     }
 
     fun toInitials(firstName: String?, lastName: String?): String {
