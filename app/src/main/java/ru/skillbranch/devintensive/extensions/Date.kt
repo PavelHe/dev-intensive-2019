@@ -1,4 +1,4 @@
-package com.example.devintensive.extensions
+package ru.skillbranch.devintensive.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,7 +40,10 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         hourDiff in 23..26 -> if (isFuture) "через день" else "день назад"
         hourDiff <= 22 && minuteDiff > 75 -> getPluralHour(hourDiff, isFuture)
         minuteDiff in 46..75 -> if (isFuture) "через час" else "час назад"
-        minuteDiff <= 45 && secondsDiff > 75 -> getPluralMinute(minuteDiff, isFuture)
+        minuteDiff <= 45 && secondsDiff > 75 -> getPluralMinute(
+            minuteDiff,
+            isFuture
+        )
         secondsDiff in 46..75 -> if (isFuture) "через минуту" else "минуту назад"
         secondsDiff in 2..45 -> if (isFuture) "через несколько секунд" else "несколько секунд назад"
         else -> "только что"

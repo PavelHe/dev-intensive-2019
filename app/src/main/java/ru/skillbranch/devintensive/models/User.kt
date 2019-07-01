@@ -1,6 +1,6 @@
-package com.example.devintensive.models
+package ru.skillbranch.devintensive.models
 
-import com.example.devintensive.utils.Utils.parseFullName
+import ru.skillbranch.devintensive.utils.Utils.parseFullName
 import java.util.*
 
 data class User(
@@ -21,14 +21,14 @@ data class User(
     )
 
     private constructor(userBuilder: Factory) : this(
-        userBuilder.id!!,
-        userBuilder.firstName,
-        userBuilder.lastName,
-        userBuilder.avatar,
-        userBuilder.rating,
-        userBuilder.respect,
-        userBuilder.lastVisit,
-        userBuilder.isOnline
+        Factory.id!!,
+        Factory.firstName,
+        Factory.lastName,
+        Factory.avatar,
+        Factory.rating,
+        Factory.respect,
+        Factory.lastVisit,
+        Factory.isOnline
     )
 
     constructor(id: String) : this(id = id, firstName = null, lastName = null)
@@ -47,7 +47,11 @@ data class User(
         fun makeUser(fullName: String?): User {
             lastId++
             val (firstName, lastName) = parseFullName(fullName)
-            return User(id = "$lastId", firstName = firstName, lastName = lastName)
+            return User(
+                id = "$lastId",
+                firstName = firstName,
+                lastName = lastName
+            )
         }
 
         fun id(id: String): Factory {
