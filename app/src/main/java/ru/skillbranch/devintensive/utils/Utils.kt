@@ -3,39 +3,10 @@ package ru.skillbranch.devintensive.utils
 object Utils {
 
     private val transliterationMap = mapOf(
-        "а" to "a",
-        "б" to "b",
-        "в" to "v",
-        "г" to "g",
-        "д" to "d",
-        "е" to "e",
-        "ё" to "e",
-        "ж" to "zh",
-        "з" to "z",
-        "и" to "i",
-        "й" to "i",
-        "к" to "k",
-        "л" to "l",
-        "м" to "m",
-        "н" to "n",
-        "о" to "o",
-        "п" to "p",
-        "р" to "r",
-        "с" to "s",
-        "т" to "t",
-        "у" to "u",
-        "ф" to "f",
-        "х" to "h",
-        "ц" to "c",
-        "ч" to "ch",
-        "ш" to "sh",
-        "щ" to "sh'",
-        "ъ" to "",
-        "ы" to "i",
-        "ь" to "",
-        "э" to "e",
-        "ю" to "yu",
-        "я" to "ya"
+        'а' to "a", 'б' to "b", 'в' to "v", 'г' to "g", 'д' to "d", 'е' to "e", 'ё' to "e", 'ж' to "zh", 'з' to "z",
+        'и' to "i", 'й' to "i", 'к' to "k", 'л' to "l", 'м' to "m", 'н' to "n", 'о' to "o", 'п' to "p", 'р' to "r",
+        'с' to "s", 'т' to "t", 'у' to "u", 'ф' to "f", 'х' to "h", 'ц' to "c", 'ч' to "ch", 'ш' to "sh", 'щ' to "sh",
+        'ъ' to "", 'ы' to "i", 'ь' to "", 'э' to "e", 'ю' to "yu", 'я' to "ya"
     )
 
     fun parseFullName(fullName: String?): Pair<String?, String?> {
@@ -46,26 +17,17 @@ object Utils {
         return firstName to lastName
     }
 
-    fun transliteration(payload: String, divider: String = " "): String {
-        fun getLetter(str: String) = transliterationMap[str] ?: str
+    fun transliteration(payload: String, divider: String = " "): String = payload.map {
+        val isUpper = it.isUpperCase()
+        val letter = if (it == ' ') divider else transliterationMap[it.toLowerCase()] ?: it
+        if (isUpper) letter.toString().capitalize() else letter
+    }.joinToString("")
 
-        val fullUserName = payload.split(" ")
-        val first = fullUserName.getOrNull(0)?.map { getLetter(it.toString().toLowerCase()) }
-            ?.joinToString(separator = "", prefix = "", postfix = "")
-        val second = fullUserName.getOrNull(1)?.map { getLetter(it.toString().toLowerCase()) }
-            ?.joinToString(separator = "", prefix = "", postfix = "")
-
-        return "${first?.capitalize()}$divider${second?.capitalize()}"
+    fun toInitials(firstName: String?, lastName: String?): String? = when {
+        firstName.isNullOrBlank() && lastName.isNullOrBlank() -> null
+        !firstName.isNullOrBlank() && lastName.isNullOrBlank() -> firstName.first().toUpperCase().toString()
+        firstName.isNullOrBlank() && !lastName.isNullOrBlank() -> lastName.first().toUpperCase().toString()
+        !firstName.isNullOrBlank() && !lastName.isNullOrBlank() -> "${firstName.first().toUpperCase()}${lastName.first().toUpperCase()}"
+        else -> throw IllegalArgumentException("Cat't parse value in toInitials")
     }
-
-    fun toInitials(firstName: String?, lastName: String?): String? {
-        if (firstName.isNullOrBlank() && lastName.isNullOrBlank()) return null
-
-        val first = firstName?.first()?.toUpperCase()
-        if (lastName.isNullOrBlank()) return "$first"
-        val second = lastName.first().toUpperCase()
-
-        return "$first$second".trim()
-    }
-
 }
