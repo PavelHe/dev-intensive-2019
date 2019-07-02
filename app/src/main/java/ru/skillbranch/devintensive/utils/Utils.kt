@@ -1,7 +1,5 @@
 package ru.skillbranch.devintensive.utils
 
-import java.lang.IllegalArgumentException
-
 object Utils {
 
     private val transliterationMap = mapOf(
@@ -48,10 +46,10 @@ object Utils {
         return firstName to lastName
     }
 
-    fun transliteration(fullName: String, divider: String = " "): String {
+    fun transliteration(payload: String, divider: String = " "): String {
         fun getLetter(str: String) = transliterationMap[str] ?: str
 
-        val fullUserName = fullName.split(" ")
+        val fullUserName = payload.split(" ")
         val first = fullUserName.getOrNull(0)?.map { getLetter(it.toString().toLowerCase()) }
             ?.joinToString(separator = "", prefix = "", postfix = "")
         val second = fullUserName.getOrNull(1)?.map { getLetter(it.toString().toLowerCase()) }
@@ -60,14 +58,12 @@ object Utils {
         return "${first?.capitalize()}$divider${second?.capitalize()}"
     }
 
-    fun toInitials(firstName: String?, lastName: String?): String {
-        if (firstName == null && lastName == null) return "null"
-        if (firstName?.trim().isNullOrEmpty() && lastName?.trim().isNullOrEmpty()) return "null null"
-        if (firstName == null) throw IllegalArgumentException("First Name can't be null")
+    fun toInitials(firstName: String?, lastName: String?): String? {
+        if (firstName.isNullOrBlank() && lastName.isNullOrBlank()) return null
 
-        val first = firstName.trim().first().toUpperCase()
-        if (lastName?.trim().isNullOrEmpty()) return "$first"
-        val second = lastName?.first()?.toUpperCase()
+        val first = firstName?.first()?.toUpperCase()
+        if (lastName.isNullOrBlank()) return "$first"
+        val second = lastName.first().toUpperCase()
 
         return "$first$second".trim()
     }
