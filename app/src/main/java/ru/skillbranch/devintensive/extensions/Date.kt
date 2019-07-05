@@ -74,6 +74,38 @@ private fun getPluralMinute(minute: Long, isFuture: Boolean): String {
     }
 }
 
+private fun getSecondWord(num: Int): String {
+    return when (getPluralType(num.toLong())) {
+        Plural.ONE -> "секунду"
+        Plural.SOME -> "секунды"
+        Plural.MANY -> "секунд"
+    }
+}
+
+private fun getMinuteWord(num: Int): String {
+    return when (getPluralType(num.toLong())) {
+        Plural.ONE -> "минуту"
+        Plural.SOME -> "минуты"
+        Plural.MANY -> "минут"
+    }
+}
+
+private fun getHourWord(num: Int): String {
+    return when (getPluralType(num.toLong())) {
+        Plural.ONE -> "час"
+        Plural.SOME -> "часа"
+        Plural.MANY -> "часов"
+    }
+}
+
+private fun getDayWord(num: Int): String {
+    return when (getPluralType(num.toLong())) {
+        Plural.ONE -> "день"
+        Plural.SOME -> "дня"
+        Plural.MANY -> "дней"
+    }
+}
+
 private fun getPluralType(num: Long): Plural {
     var n = Math.abs(num).toInt()
     n %= 100
@@ -88,6 +120,15 @@ private fun getPluralType(num: Long): Plural {
         return Plural.SOME
     }
     return Plural.MANY
+}
+
+fun TimeUnits.plural(num: Int): String {
+    return when (this) {
+        TimeUnits.SECOND -> "$num ${getSecondWord(num)}"
+        TimeUnits.MINUTE -> "$num ${getMinuteWord(num)}"
+        TimeUnits.HOUR -> "$num ${getHourWord(num)}"
+        TimeUnits.DAY -> "$num ${getDayWord(num)}"
+    }
 }
 
 enum class TimeUnits {
