@@ -122,20 +122,20 @@ private fun getPluralType(num: Long): Plural {
     return Plural.MANY
 }
 
-fun TimeUnits.plural(num: Int): String {
-    return when (this) {
-        TimeUnits.SECOND -> "$num ${getSecondWord(num)}"
-        TimeUnits.MINUTE -> "$num ${getMinuteWord(num)}"
-        TimeUnits.HOUR -> "$num ${getHourWord(num)}"
-        TimeUnits.DAY -> "$num ${getDayWord(num)}"
-    }
-}
-
 enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+
+    fun plural(num: Int): String {
+        return when (this) {
+            SECOND -> "$num ${getSecondWord(num)}"
+            MINUTE -> "$num ${getMinuteWord(num)}"
+            HOUR -> "$num ${getHourWord(num)}"
+            DAY -> "$num ${getDayWord(num)}"
+        }
+    }
 }
 
 enum class Plural {
